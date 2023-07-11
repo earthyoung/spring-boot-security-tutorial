@@ -3,6 +3,8 @@ package com.example.security1.controller;
 import com.example.security1.model.User;
 import com.example.security1.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -61,6 +63,20 @@ public class IndexController {
         user.setRole("ROLE_USER");
         userRepository.save(user);
         return "redirect:/";
+    }
+
+    @Secured("ROLE_ADMIN")  // 해당 권한을 가진 유저만 접근 허용: 간단하게 표시 가능
+    @GetMapping("/info")
+    @ResponseBody
+    public String info(){
+        return "개인정보";
+    }
+
+    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
+    @GetMapping("/data")
+    @ResponseBody
+    public String data(){
+        return "data";
     }
 
 }
