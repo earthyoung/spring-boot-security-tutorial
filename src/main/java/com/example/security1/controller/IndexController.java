@@ -48,6 +48,11 @@ public class IndexController {
         return "loginForm";
     }
 
+    @GetMapping("/loginForm")
+    public String loginForm(){
+        return "loginForm";
+    }
+
     @GetMapping("/join")
     public String join() {
         return "join";

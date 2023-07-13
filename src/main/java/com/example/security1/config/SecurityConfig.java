@@ -39,6 +39,9 @@ public class SecurityConfig {
                                 .loginPage("/loginForm")
                                 .loginProcessingUrl("/login")
                                 .defaultSuccessUrl("/"))
+                .oauth2Login((oauth2Login) ->
+                        oauth2Login
+                                .loginPage("/loginForm"))
                 .httpBasic(withDefaults());
         return http.build();
     }
