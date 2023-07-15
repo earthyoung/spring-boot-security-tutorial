@@ -1,6 +1,8 @@
 package com.example.security1.config;
 
 
+import com.example.security1.config.oauth.PrincipalOauth2UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -19,6 +21,9 @@ import static org.springframework.security.config.Customizer.withDefaults;
 // @PostAuthorize: 메소드 실행 직후 권한 검증
 public class SecurityConfig {
 
+    @Autowired
+    public PrincipalOauth2UserService principalOauth2UserService;
+
     @Bean
     public BCryptPasswordEncoder encoder(){
         return new BCryptPasswordEncoder();
@@ -32,7 +37,8 @@ public class SecurityConfig {
                 .cors(cors -> cors.disable())
                 .authorizeHttpRequests((authz) -> authz
                         .requestMatchers("/user/**").hasAnyRole("USER_ADMIN", "USER_MANAGER")
-                        .anyRequest().permitAll()
+                        .requestMatchers("/login").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .formLogin((formLogin) ->
                         formLogin
@@ -41,7 +47,9 @@ public class SecurityConfig {
                                 .defaultSuccessUrl("/"))
                 .oauth2Login((oauth2Login) ->
                         oauth2Login
-                                .loginPage("/loginForm"))
+                                .loginPage("/loginForm")
+                                .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig.userService(principalOauth2UserService))
+                )
                 .httpBasic(withDefaults());
         return http.build();
     }
