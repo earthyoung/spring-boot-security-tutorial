@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.security.Principal;
+
 @Controller
 public class IndexController {
 
@@ -31,8 +33,8 @@ public class IndexController {
 
     @GetMapping("/user")
     @ResponseBody
-    public String user(){
-        return "user";
+    public User user(@AuthenticationPrincipal PrincipalDetails principalDetails){
+        return principalDetails.getUser();
     }
 
     @GetMapping("/admin")
@@ -64,7 +66,6 @@ public class IndexController {
 
     @PostMapping("/joinProc")
     public String joinProc(User user) {
-        System.out.println("회원가입 진행 : " + user);
         String rawPassword = user.getPassword();
         String encPassword = bCryptPasswordEncoder.encode(rawPassword);
         user.setPassword(encPassword);
