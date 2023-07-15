@@ -35,15 +35,15 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable());
         http
                 .cors(cors -> cors.disable())
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/user/**").hasAnyRole("USER_ADMIN", "USER_MANAGER")
-                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/login", "/loginForm", "/loginProc", "/join", "/joinProc", "/user").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin((formLogin) ->
                         formLogin
                                 .loginPage("/loginForm")
-                                .loginProcessingUrl("/login")
+                                .loginProcessingUrl("/loginProc")
                                 .defaultSuccessUrl("/"))
                 .oauth2Login((oauth2Login) ->
                         oauth2Login
